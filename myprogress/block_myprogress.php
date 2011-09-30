@@ -28,36 +28,40 @@ class block_myprogress extends block_list {
         $course = $this->page->course;
         require_once($CFG->dirroot.'/course/lib.php');
 
-        $modinfo = get_fast_modinfo($course);
+        $modinfo = get_fast_modinfo($course);       
         $modfullnames = array();
         $completion = new completion_info($course);
         $activities = $completion->get_activities();
+      //  print_object($activities);
         if($completion->is_enabled()){
         
         foreach($activities as $activity){
             $data = $completion->get_data($activity, true, $userid=0, null);
             $completionstate=$data->completionstate;
-            if($completionstate==-1){
+            if($completionstate ==5){
                 $waitingforgradeactivities++;
                 
             }
             
-            elseif($completionstate==0){
+            elseif($completionstate ==0){
                 $notattemptedactivities++;
                 
             }
  
-            elseif($completionstate==1 || $completionstate==2){
+            elseif($completionstate ==1 || $completionstate ==2){
                 $completedactivities++;
                 
             }
 
-            elseif($completionstate==3){
+            elseif($completionstate ==3){
                 $incompletedactivities++;
             }
-            else{
+            else if($completionstate ==4){
                 $savedactivities++;
-            }           
+            }
+            else{
+                
+            }
         
         }                 
         $context = get_context_instance(CONTEXT_COURSE, $course->id);

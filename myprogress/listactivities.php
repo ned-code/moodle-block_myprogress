@@ -24,7 +24,7 @@ require_login($course);
 $context = get_context_instance(CONTEXT_COURSE, $course->id);
 $istudent = has_capability('mod/assignment:submit', $context);
 
-// only teachers should see this!
+// only student should see this!
 if (!$istudent) {
     print_error("Only students can use this page!");
 }
@@ -45,7 +45,7 @@ if ($completion->is_enabled()) {
     foreach ($activities as $activity) {
         $data = $completion->get_data($activity, true, $userid = 0, null);
         $activitystate = $data->completionstate;
-        if ($activitystate == -1) {
+        if ($activitystate == 5) {
             $waitingforgradeactivities++;
         } elseif ($activitystate == 0) {
             $notattemptedactivities++;
@@ -53,7 +53,8 @@ if ($completion->is_enabled()) {
             $completedactivities++;
         } elseif ($activitystate == 3) {
             $incompletedactivities++;
-        } else {
+        } 
+        elseif($activitystate == 4) {
             $savedactivities++;
         }
     }
@@ -119,7 +120,7 @@ if (($show == 'completed' || $show == 'incompleted' || $show == 'saved' || $show
     echo "<tr>";
     echo "<th align='center' width='15%'><strong>Activity type </strong></th>";
     echo "<th align='left' width='67%' style='text-align:left;'><strong>Activity or Resource Name </strong></th>";
-    echo "<th align='center' width='18%'><strong>Section <strong></th>";
+    //echo "<th align='center' width='18%'><strong>Section <strong></th>";
     echo "</tr>";
 }
 else{
@@ -143,7 +144,7 @@ if ($show == 'completed') {
                 echo $modtype;
                 echo "</td>\n";
                 echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
-                echo "<td align='center'>Section-$activity->section</td></tr>\n";
+               // echo "<td align='center'>Section-$activity->section</td></tr>\n";
             }
         }
     }
@@ -159,7 +160,7 @@ if ($show == 'completed') {
                 echo $modtype;
                 echo "</td>\n";
                 echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
-                echo "<td align='center'>Section-$activity->section</td></tr>\n";
+               // echo "<td align='center'>Section-$activity->section</td></tr>\n";
             }
         }    
     }
@@ -175,7 +176,7 @@ if ($show == 'completed') {
                 echo $modtype;
                 echo "</td>\n";
                 echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
-                echo "<td align='center'>Section-$activity->section</td></tr>\n";
+               // echo "<td align='center'>Section-$activity->section</td></tr>\n";
             }
         }
     }
@@ -184,14 +185,14 @@ if ($show == 'completed') {
         foreach ($activities as $activity) {
             $data = $completion->get_data($activity, true, $userid = 0, null);
             $activitystate = $data->completionstate;
-            if ($activitystate == -1) {
+            if ($activitystate == 5) {
                 echo "<tr><td align='center'>\n";
                 $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
                 $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";            
                 echo $modtype;
                 echo "</td>\n";
                 echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
-                echo "<td align='center'>Section-$activity->section</td></tr>\n";
+               // echo "<td align='center'>Section-$activity->section</td></tr>\n";
             }
         }
   }
@@ -208,7 +209,7 @@ if ($show == 'completed') {
                 echo $modtype;
                 echo "</td>\n";
                 echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
-                echo "<td align='center'>Section-$activity->section</td></tr>\n";
+                //echo "<td align='center'>Section-$activity->section</td></tr>\n";
             }
         }
     }
