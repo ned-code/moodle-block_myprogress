@@ -2,7 +2,6 @@
 
 require_once('../../config.php');
 require_once($CFG->dirroot . '/course/lib.php');
-require_once('lib.php');
 require_once($CFG->libdir . '/completionlib.php');
 global $CFG, $DB, $OUTPUT, $PAGE, $COURSE;
 
@@ -204,7 +203,7 @@ if ($show == 'completed') {
             if ($activitystate == 4) {
                 echo "<tr><td align='center'>\n";
                 $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                echo $modtype;
+                //echo $modtype;
                 $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";            
                 echo $modtype;
                 echo "</td>\n";

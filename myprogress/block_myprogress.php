@@ -32,7 +32,7 @@ class block_myprogress extends block_list {
         $modfullnames = array();
         $completion = new completion_info($course);
         $activities = $completion->get_activities();
-      //  print_object($activities);
+        
         if($completion->is_enabled()){
         
         foreach($activities as $activity){
