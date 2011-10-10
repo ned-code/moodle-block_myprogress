@@ -2,7 +2,7 @@
 
 // language file for block_myprogress
 $string['pluginname'] = 'My Progress';
-$string['blocktitle'] = 'My Progress';
+$string['blocktitle'] = 'FN-My Progress';
 $string['breadcrumb:waitingforgrade'] = 'Activities waiting for grade';
 $string['title:waitingforgrade'] = 'Following activites are waiting for grade';
 $string['breadcrumb:activitiescompleted'] = 'Completed Activities';
@@ -17,3 +17,10 @@ $string['saved'] = 'saved';
 $string['incompleted'] = 'incomplete';
 $string['completed'] = 'complete';
 $string['notattempted'] = 'not attempted';
+$string['blocksettings'] = 'Block settings';
+$string['setblocktitle'] = 'Title';
+$string['config_title'] = 'My Progress';
+$string['config_title_help'] = '<p>Using this setting you can changes the tilte of the  block</p>';
+
+
+

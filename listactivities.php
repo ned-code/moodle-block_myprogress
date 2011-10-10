@@ -13,7 +13,7 @@ $show = optional_param('show', 'notloggedin', PARAM_ALPHA);
 //  Paging options:
 $page = optional_param('page', 0, PARAM_INT);
 $perpage = optional_param('perpage', 2, PARAM_INT);
-$PAGE->set_url('/blocks/myprogress/listactivities.php', array('id' => $id, 'show' => $show, 'navlevel' => 'top'));
+$PAGE->set_url('/blocks/fn_myprogress/listactivities.php', array('id' => $id, 'show' => $show, 'navlevel' => 'top'));
 
 if (!$course = $DB->get_record("course", array("id" => $id))) {
     print_error("Course ID was incorrect");
@@ -64,34 +64,34 @@ switch ($show) {
     case 'completed':
 
         $activities_results = $completedactivities;
-        $name = get_string('breadcrumb:activitiescompleted', 'block_myprogress');
-        $title = get_string('title:completed', 'block_myprogress') . " (Total:" . $completedactivities . " Activities)";
+        $name = get_string('breadcrumb:activitiescompleted', 'block_fn_myprogress');
+        $title = get_string('title:completed', 'block_fn_myprogress') . " (Total:" . $completedactivities . " Activities)";
         break;
 
     case 'incompleted':
 
         $activities_results = $incompletedactivities;
-        $name = get_string('breadcrumb:activitiesincompleted', 'block_myprogress');
-        $title = get_string('title:incompleted', 'block_myprogress') . " (Total:" . $incompletedactivities . " Activities)";
+        $name = get_string('breadcrumb:activitiesincompleted', 'block_fn_myprogress');
+        $title = get_string('title:incompleted', 'block_fn_myprogress') . " (Total:" . $incompletedactivities . " Activities)";
         break;
 
     case 'saved':
 
         $activities_results = $savedactivities;        
-        $name = get_string('breadcrumb:saved', 'block_myprogress');
-        $title = get_string('title:saved', 'block_myprogress') . " (Total:" . $savedactivities . " Activities)";
+        $name = get_string('breadcrumb:saved', 'block_fn_myprogress');
+        $title = get_string('title:saved', 'block_fn_myprogress') . " (Total:" . $savedactivities . " Activities)";
         break;
 
     case 'notattempted':
         $activities_results = $notattemptedactivities;
-        $name = get_string('breadcrumb:notattempted', 'block_myprogress');
-        $title = get_string('title:notattempted', 'block_myprogress') . " (Total:" . $notattemptedactivities . " Activities)";
+        $name = get_string('breadcrumb:notattempted', 'block_fn_myprogress');
+        $title = get_string('title:notattempted', 'block_fn_myprogress') . " (Total:" . $notattemptedactivities . " Activities)";
         break;
 
     case 'waitingforgrade':
         $activities_results = $waitingforgradeactivities;
-        $name = get_string('breadcrumb:waitingforgrade', 'block_myprogress');
-        $title = get_string('title:waitingforgrade', 'block_myprogress') . " (Total:" . $waitingforgradeactivities . " Activities)";
+        $name = get_string('breadcrumb:waitingforgrade', 'block_fn_myprogress');
+        $title = get_string('title:waitingforgrade', 'block_fn_myprogress') . " (Total:" . $waitingforgradeactivities . " Activities)";
         break;
     default:
         break;
@@ -124,7 +124,7 @@ if (($show == 'completed' || $show == 'incompleted' || $show == 'saved' || $show
 }
 else{
     echo '<div style="text-align:center; padding:12px;">';
-    echo "No activity with status ". get_string($show, 'block_myprogress')."";
+    echo "No activity with status ". get_string($show, 'block_fn_myprogress')."";
     echo "</div>";
 }
 // iterate

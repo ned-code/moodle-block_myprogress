@@ -2,9 +2,27 @@
 
 require_once($CFG->libdir.'/completionlib.php');
 
-class block_myprogress extends block_list {
+class block_fn_myprogress extends block_list {
     function init() {
-        $this->title = get_string('pluginname', 'block_myprogress');
+        $this->title = get_string('blocktitle', 'block_fn_myprogress');
+    }
+    
+    /**
+     * Constrols the block title based on instance configuration
+     *
+     * @return bool
+     */
+    public function specialization() {
+        global $course;
+
+        /// Need the bigger course object.
+        $this->course = $course;
+
+        if (empty($this->config->title)) {
+            $this->title = get_string('pluginname', 'block_fn_myprogress');
+        } else {
+            $this->title = $this->config->title;
+        }       
     }
 
     function get_content() {
@@ -68,25 +86,25 @@ class block_myprogress extends block_list {
         
         if(!has_capability('moodle/course:update',$context) && !is_guest($context)&&
                 !has_capability('moodle/grade:viewall',$context) && !is_guest($context)){
-             $this->content->items[] =  '<a href="' . $CFG->wwwroot . '/blocks/myprogress/listactivities.php?id=' . $course->id . '&show=completed' .
+             $this->content->items[] =  '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' . $course->id . '&show=completed' .
                         '&navlevel=top">' . $completedactivities . ' Completed</a>';
-             $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/myprogress/pix/completed.gif"
+             $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/fn_myprogress/pix/completed.gif"
                                                     height="16" width="16" alt="">'; 
-             $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/myprogress/listactivities.php?id=' . $course->id . '&show=incompleted' .
+             $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' . $course->id . '&show=incompleted' .
                         '&navlevel=top">' . $incompletedactivities . ' Incomplete</a>';
-             $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/myprogress/pix/incomplete.gif"
+             $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/fn_myprogress/pix/incomplete.gif"
                                                     height="16" width="16" alt="">';
-             $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/myprogress/listactivities.php?id=' . $course->id . '&show=saved' .
+             $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' . $course->id . '&show=saved' .
                         '&navlevel=top">' . $savedactivities . ' Saved</a>';
-             $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/myprogress/pix/saved.gif"
+             $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/fn_myprogress/pix/saved.gif"
                                                     height="16" width="16" alt="">';
-             $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/myprogress/listactivities.php?id=' . $course->id . '&show=notattempted' .
+             $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' . $course->id . '&show=notattempted' .
                         '&navlevel=top">' . $notattemptedactivities . ' Not Attempted</a>';
-             $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/myprogress/pix/notattempted.gif"
+             $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/fn_myprogress/pix/notattempted.gif"
                                                     height="16" width="16" alt="">';
-             $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/myprogress/listactivities.php?id=' . $course->id . '&show=waitingforgrade' .
+             $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' . $course->id . '&show=waitingforgrade' .
                         '&navlevel=top">'. $waitingforgradeactivities . ' Waiting for grade</a>';
-             $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/myprogress/pix/unmarked.gif"
+             $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/fn_myprogress/pix/unmarked.gif"
                                                     height="16" width="16" alt="">'; 
              return $this->content;
         }
