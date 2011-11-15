@@ -2,7 +2,9 @@
 
 require_once('../../config.php');
 require_once($CFG->dirroot . '/course/lib.php');
+require_once($CFG->dirroot . '/blocks/fn_myprogress/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
+
 global $CFG, $DB, $OUTPUT, $PAGE, $COURSE;
 
 $USINGHTMLEDITOR = false;
@@ -40,25 +42,48 @@ $completion = new completion_info($course);
 $activities = $completion->get_activities();
 
 if ($completion->is_enabled()) {
-
     foreach ($activities as $activity) {
-        $data = $completion->get_data($activity, true, $userid = 0, null);
-        $activitystate = $data->completionstate;
-        if ($activitystate == 5) {
-            $waitingforgradeactivities++;
-        } elseif ($activitystate == 0) {
-            $notattemptedactivities++;
-        } elseif ($activitystate == 1 || $activitystate == 2) {
+        if (!$activity->visible) {
+            continue;
+        }
+        $data = $completion->get_data($activity, true, $USER->id, null);
+        $completionstate = $data->completionstate;
+        if ($completionstate == 0) {
+            if (($activity->module == 1)
+                    && ($activity->modname = 'assignment')
+                    && ($activity->completion == 2)
+                    && assignment_status($activity, $USER->id)) {
+                //grab assignment status
+                $assignement_status = assignment_status($activity, $USER->id);
+                if (isset($assignement_status)) {
+                    if ($assignement_status == 'saved') {
+                        $savedactivities++;
+                    } else if ($assignement_status == 'submitted') {
+                        $waitingforgradeactivities++;
+                    }
+                }
+            } else {
+                $notattemptedactivities++;
+            }
+        } elseif ($completionstate == 1 || $completionstate == 2) {
             $completedactivities++;
-        } elseif ($activitystate == 3) {
-            $incompletedactivities++;
-        } 
-        elseif($activitystate == 4) {
-            $savedactivities++;
+        } elseif ($completionstate == 3) {
+            if (($activity->module == 1)
+                    && ($activity->modname = 'assignment')
+                    && ($activity->completion == 2)
+                    && assignment_status($activity, $USER->id)) {
+                continue;
+            } else {
+                $incompletedactivities++;
+            }
+        } else {
+            // do nothing   
         }
     }
 }
 
+
+// switch to show soecific assignment
 switch ($show) {
 
     case 'completed':
@@ -77,7 +102,7 @@ switch ($show) {
 
     case 'saved':
 
-        $activities_results = $savedactivities;        
+        $activities_results = $savedactivities;
         $name = get_string('breadcrumb:saved', 'block_fn_myprogress');
         $title = get_string('title:saved', 'block_fn_myprogress') . " (Total:" . $savedactivities . " Activities)";
         break;
@@ -115,100 +140,152 @@ $totalcount = $activities_results;
 echo '<table width="96%" class="markingcontainerList" border="0" cellpadding="0" cellspacing="0" align="center">' . '<tr><td class="intd">';
 
 echo '<table  width="100%" border="0" cellpadding="0" cellspacing="0">';
-if (($show == 'completed' || $show == 'incompleted' || $show == 'saved' || $show == 'notattempted' || $show == 'waitingforgrade') && $totalcount >0 && $activities>0) {
+if (($show == 'completed' || $show == 'incompleted' || $show == 'saved' || $show == 'notattempted' || $show == 'waitingforgrade') && $totalcount > 0 && $activities > 0) {
     echo "<tr>";
     echo "<th align='center' width='15%'><strong>Activity type </strong></th>";
     echo "<th align='left' width='67%' style='text-align:left;'><strong>Activity or Resource Name </strong></th>";
     //echo "<th align='center' width='18%'><strong>Section <strong></th>";
     echo "</tr>";
-}
-else{
+} else {
     echo '<div style="text-align:center; padding:12px;">';
-    echo "No activity with status ". get_string($show, 'block_fn_myprogress')."";
+    echo "No activity with status " . get_string($show, 'block_fn_myprogress') . "";
     echo "</div>";
 }
 // iterate
 //for ($i = ($page * $perpage); ($i < ($page * $perpage) + $perpage) && ($i < $totalcount); $i++) {
 
 if ($show == 'completed') {
-    if($activities){
+    if ($activities) {
         foreach ($activities as $activity) {
-            $data = $completion->get_data($activity, false, $userid = 0, null);
+            if (!$activity->visible) {
+                continue;
+            }
 
+            $data = $completion->get_data($activity, false, $userid = 0, null);
             $activitystate = $data->completionstate;
             if ($activitystate == 1 || $activitystate == 2) {
                 echo "<tr><td align='center'>\n";
                 $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";            
+                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
                 echo $modtype;
                 echo "</td>\n";
                 echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
-               // echo "<td align='center'>Section-$activity->section</td></tr>\n";
+                // echo "<td align='center'>Section-$activity->section</td></tr>\n";
             }
         }
     }
-} else if ($show == 'incompleted') {
-    if($activities){
+}
+// if show is incompleted
+else if ($show == 'incompleted') {
+    if ($activities) {
         foreach ($activities as $activity) {
+            if (!$activity->visible) {
+                continue;
+            }
             $data = $completion->get_data($activity, true, $userid = 0, null);
             $activitystate = $data->completionstate;
+
             if ($activitystate == 3) {
+                if (($activity->module == 1)
+                        && ($activity->modname = 'assignment')
+                        && ($activity->completion == 2)
+                        && assignment_status($activity, $USER->id)) {
+                    continue;
+                }
                 echo "<tr><td align='center'>\n";
                 $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";            
+                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
                 echo $modtype;
                 echo "</td>\n";
                 echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
-               // echo "<td align='center'>Section-$activity->section</td></tr>\n";
+                // echo "<td align='center'>Section-$activity->section</td></tr>\n";
             }
-        }    
+        }
     }
-} else if ($show == 'notattempted') {
-    if($activities){
+}
+// if show is nonattempted
+else if ($show == 'notattempted') {
+    if ($activities) {
         foreach ($activities as $activity) {
+            if (!$activity->visible) {
+                continue;
+            }
+            $data = $completion->get_data($activity, true, $USER->id, null);
+            $activitystate = $data->completionstate;
+            if ($activitystate == 0) {
+                if (($activity->module == 1)
+                        && ($activity->modname = 'assignment')
+                        && ($activity->completion == 2)
+                        && assignment_status($activity, $USER->id)) {
+                    continue;
+                }
+                echo "<tr><td align='center'>\n";
+                $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
+                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
+                echo $modtype;
+                echo "</td>\n";
+                echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
+                // echo "<td align='center'>Section-$activity->section</td></tr>\n";
+            }
+        }
+    }
+}
+// if show is waitinh for grade
+else if ($show == 'waitingforgrade') {
+    if ($activities) {
+        foreach ($activities as $activity) {
+            if (!$activity->visible) {
+                continue;
+            }
+            $data = $completion->get_data($activity, true, $USER->id, null);
+            $activitystate = $data->completionstate;
+            if ($activitystate == 0) {
+                if (($activity->module == 1)
+                        && ($activity->modname = 'assignment')
+                        && ($activity->completion == 2)
+                        && assignment_status($activity, $USER->id)) {
+                    $assignement_status = assignment_status($activity, $USER->id);
+                    if (isset($assignement_status)) {
+                        if ($assignement_status == 'submitted') {
+                            echo "<tr><td align='center'>\n";
+                            $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
+                            $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
+                            echo $modtype;
+                            echo "</td>\n";
+                            echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
+                            // echo "<td align='center'>Section-$activity->section</td></tr>\n";                            
+                        }
+                    }
+                }
+            }
+        }
+    }
+} else if ($show == 'saved') {
+    if ($activities) {
+        foreach ($activities as $activity) {
+            if (!$activity->visible) {
+                continue;
+            }
             $data = $completion->get_data($activity, true, $userid = 0, null);
             $activitystate = $data->completionstate;
             if ($activitystate == 0) {
-                echo "<tr><td align='center'>\n";
-                $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";            
-                echo $modtype;
-                echo "</td>\n";
-                echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
-               // echo "<td align='center'>Section-$activity->section</td></tr>\n";
-            }
-        }
-    }
-} else if ($show == 'waitingforgrade') {
-    if($activities){
-        foreach ($activities as $activity) {
-            $data = $completion->get_data($activity, true, $userid = 0, null);
-            $activitystate = $data->completionstate;
-            if ($activitystate == 5) {
-                echo "<tr><td align='center'>\n";
-                $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";            
-                echo $modtype;
-                echo "</td>\n";
-                echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
-               // echo "<td align='center'>Section-$activity->section</td></tr>\n";
-            }
-        }
-  }
-} else if ($show == 'saved') {
-    if($activities){
-        foreach ($activities as $activity) {
-            $data = $completion->get_data($activity, true, $userid = 0, null);
-            $activitystate = $data->completionstate;
-            if ($activitystate == 4) {
-                echo "<tr><td align='center'>\n";
-                $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                //echo $modtype;
-                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";            
-                echo $modtype;
-                echo "</td>\n";
-                echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
-                //echo "<td align='center'>Section-$activity->section</td></tr>\n";
+                if (($activity->module == 1)
+                        && ($activity->modname = 'assignment')
+                        && ($activity->completion == 2)
+                        && assignment_status($activity, $USER->id)) {
+                    if (isset($assignement_status)) {
+                        if ($assignement_status == 'saved') {
+                            echo "<tr><td align='center'>\n";
+                            $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
+                            //echo $modtype;
+                            $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
+                            echo $modtype;
+                            echo "</td>\n";
+                            echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
+                            //echo "<td align='center'>Section-$activity->section</td></tr>\n";
+                        }
+                    }
+                }
             }
         }
     }

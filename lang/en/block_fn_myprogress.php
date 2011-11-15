@@ -1,6 +1,7 @@
 <?php
 
 // language file for block_myprogress
+
 $string['pluginname'] = 'My Progress';
 $string['blocktitle'] = 'FN-My Progress';
 $string['breadcrumb:waitingforgrade'] = 'Activities waiting for grade';
@@ -21,6 +22,9 @@ $string['blocksettings'] = 'Block settings';
 $string['setblocktitle'] = 'Title';
 $string['config_title'] = 'My Progress';
 $string['config_title_help'] = '<p>Using this setting you can changes the tilte of the  block</p>';
+//$string['block/fn_myprogress:showblock'] = 'Show My Progress';
+$string['fn_myprogress:viewblock'] = 'Show My Progress';
+
 
 
 
