@@ -85,7 +85,7 @@ class block_fn_myprogress extends block_list {
                 $completionstate = $data->completionstate;
                 if ($completionstate == 0) {
                     if (($activity->module == 1)
-                            && ($activity->modname = 'assignment')
+                            && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                             && ($activity->completion == 2)
                             && assignment_status($activity, $USER->id)) {
 

@@ -50,7 +50,7 @@ if ($completion->is_enabled()) {
         $completionstate = $data->completionstate;
         if ($completionstate == 0) {
             if (($activity->module == 1)
-                    && ($activity->modname = 'assignment')
+                    && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                     && ($activity->completion == 2)
                     && assignment_status($activity, $USER->id)) {
                 //grab assignment status
@@ -69,7 +69,7 @@ if ($completion->is_enabled()) {
             $completedactivities++;
         } elseif ($completionstate == 3) {
             if (($activity->module == 1)
-                    && ($activity->modname = 'assignment')
+                    && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                     && ($activity->completion == 2)
                     && assignment_status($activity, $USER->id)) {
                 continue;
@@ -187,7 +187,7 @@ else if ($show == 'incompleted') {
 
             if ($activitystate == 3) {
                 if (($activity->module == 1)
-                        && ($activity->modname = 'assignment')
+                        && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                         && ($activity->completion == 2)
                         && assignment_status($activity, $USER->id)) {
                     continue;
@@ -214,7 +214,7 @@ else if ($show == 'notattempted') {
             $activitystate = $data->completionstate;
             if ($activitystate == 0) {
                 if (($activity->module == 1)
-                        && ($activity->modname = 'assignment')
+                        && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                         && ($activity->completion == 2)
                         && assignment_status($activity, $USER->id)) {
                     continue;
@@ -241,7 +241,7 @@ else if ($show == 'waitingforgrade') {
             $activitystate = $data->completionstate;
             if ($activitystate == 0) {
                 if (($activity->module == 1)
-                        && ($activity->modname = 'assignment')
+                        && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                         && ($activity->completion == 2)
                         && assignment_status($activity, $USER->id)) {
                     $assignement_status = assignment_status($activity, $USER->id);
@@ -270,7 +270,7 @@ else if ($show == 'waitingforgrade') {
             $activitystate = $data->completionstate;
             if ($activitystate == 0) {
                 if (($activity->module == 1)
-                        && ($activity->modname = 'assignment')
+                        && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                         && ($activity->completion == 2)
                         && assignment_status($activity, $USER->id)) {
                     if (isset($assignement_status)) {
