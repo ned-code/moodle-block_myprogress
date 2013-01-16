@@ -100,10 +100,10 @@ switch ($show) {
         $title = get_string('title:incompleted', 'block_fn_myprogress') . " (Total:" . $incompletedactivities . " Activities)";
         break;
 
-    case 'saved':
+    case 'draft':
 
         $activities_results = $savedactivities;
-        $name = get_string('breadcrumb:saved', 'block_fn_myprogress');
+        $name = get_string('breadcrumb:draft', 'block_fn_myprogress');
         $title = get_string('title:saved', 'block_fn_myprogress') . " (Total:" . $savedactivities . " Activities)";
         break;
 
@@ -140,7 +140,7 @@ $totalcount = $activities_results;
 echo '<table width="96%" class="markingcontainerList" border="0" cellpadding="0" cellspacing="0" align="center">' . '<tr><td class="intd">';
 
 echo '<table  width="100%" border="0" cellpadding="0" cellspacing="0">';
-if (($show == 'completed' || $show == 'incompleted' || $show == 'saved' || $show == 'notattempted' || $show == 'waitingforgrade') && $totalcount > 0 && $activities > 0) {
+if (($show == 'completed' || $show == 'incompleted' || $show == 'draft' || $show == 'notattempted' || $show == 'waitingforgrade') && $totalcount > 0 && $activities > 0) {
     echo "<tr>";
     echo "<th align='center' width='15%'><strong>Activity type </strong></th>";
     echo "<th align='left' width='67%' style='text-align:left;'><strong>Activity or Resource Name </strong></th>";
@@ -260,7 +260,7 @@ else if ($show == 'waitingforgrade') {
             }
         }
     }
-} else if ($show == 'saved') {
+} else if ($show == 'draft') {
     if ($activities) {
         foreach ($activities as $activity) {
             if (!$activity->visible) {

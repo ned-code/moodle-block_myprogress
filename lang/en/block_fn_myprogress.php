@@ -11,10 +11,10 @@ $string['title:completed'] = 'You have completed the following activities';$stri
 $string['breadcrumb:activitiesincompleted'] = 'Activities incompleted';
 $string['breadcrumb:notattempted'] = 'Activities not attempted';
 $string['title:notattempted'] = 'You have Not Attempted the following activities';
-$string['breadcrumb:saved'] = 'Activities saved';
+$string['breadcrumb:draft'] = 'Activities draft';
 $string['title:saved'] = 'You have saved the following activites';
 $string['waitingforgrade'] = 'waiting for grade';
-$string['saved'] = 'saved';
+$string['draft'] = 'draft';
 $string['incompleted'] = 'incomplete';
 $string['completed'] = 'complete';
 $string['notattempted'] = 'not attempted';
@@ -24,6 +24,7 @@ $string['config_title'] = 'FN My Progress';
 $string['config_title_help'] = '<p>Using this setting you can changes the tilte of the  block</p>';
 //$string['block/fn_myprogress:showblock'] = 'Show My Progress';
 $string['fn_myprogress:viewblock'] = 'Show My Progress';
+$string['fn_myprogress:addinstance'] = 'Add a My Progress block';
 
 
 

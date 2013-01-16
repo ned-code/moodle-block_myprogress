@@ -79,11 +79,18 @@ function assignment_status($mod, $userid) {
             return false;
         }
 
-        $submissionisgraded = $DB->record_exists('assign_grades', array('assignment'=>$assignment->id, 'userid'=>$USER->id));
+        //$submissionisgraded = $DB->record_exists('assign_grades', array('assignment'=>$assignment->id, 'userid'=>$USER->id));
+        if (!$submissionisgraded = $DB->get_record('assign_grades', array('assignment'=>$assignment->id, 'userid'=>$USER->id))) {
+            $graded = false;
+        }else if ($submissionisgraded->grade <> ''){
+            $graded = true;  
+        }else{
+            $graded = false;
+        }        
 
         if ($submission->status == 'draft') {
             return 'saved';
-        } else if ($submission->status == 'submitted' && !$submissionisgraded) {
+        } else if ($submission->status == 'submitted' && !$graded) {
             return 'submitted';
         }
     } else {

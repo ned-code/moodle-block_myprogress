@@ -25,6 +25,19 @@
 
 $capabilities = array(
 
+
+    'block/fn_myprogress:addinstance' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_BLOCK,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+
+        'clonepermissionsfrom' => 'moodle/site:manageblocks'
+    ),     
+   
+
     'block/fn_myprogress:viewblock' => array(
 
         'captype' => 'read',

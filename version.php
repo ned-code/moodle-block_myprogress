@@ -24,8 +24,8 @@
  * @author     MoodleFn
  */
 
-$plugin->version = 2011112501;
+$plugin->version = 2011112504;
 $plugin->maturity = MATURITY_ALPHA;
-$plugin->requires = 2011070100; // 2.1
+$plugin->requires = 2012120300.00; // 2.4 (Build: 20121203)
 $plugin->component = 'block_fn_myprogress';
 $plugin->release = '2.1';
