@@ -6,6 +6,16 @@ require_once($CFG->dirroot . '/blocks/fn_myprogress/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
 
 global $CFG, $DB, $OUTPUT, $PAGE, $COURSE;
+//Check sesubmission plugin
+if ($assignCheck = $DB->get_record_sql("SELECT * FROM {$CFG->prefix}assign LIMIT 0, 1")){
+    if(isset($assignCheck->resubmission)){
+        $resubmission = true;
+    }else{
+        $resubmission = false;
+    }
+}else{
+    $resubmission = false;
+}
 
 $USINGHTMLEDITOR = false;
 
@@ -48,17 +58,20 @@ if ($completion->is_enabled()) {
         }
         $data = $completion->get_data($activity, true, $USER->id, null);
         $completionstate = $data->completionstate;
+        $assignment_status = assignment_status($activity, $USER->id, $resubmission);
         if ($completionstate == 0) {
             if (($activity->module == 1)
                     && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                     && ($activity->completion == 2)
-                    && assignment_status($activity, $USER->id)) {
+                    && $assignment_status) {
                 //grab assignment status
-                $assignement_status = assignment_status($activity, $USER->id);
-                if (isset($assignement_status)) {
-                    if ($assignement_status == 'saved') {
+                
+                if (isset($assignment_status)) {
+                    if ($assignment_status == 'saved') {
                         $savedactivities++;
-                    } else if ($assignement_status == 'submitted') {
+                    } else if ($assignment_status == 'submitted') {
+                        $incompletedactivities++;
+                    } else if ($assignment_status == 'waitinggrade') {
                         $waitingforgradeactivities++;
                     }
                 }
@@ -66,13 +79,30 @@ if ($completion->is_enabled()) {
                 $notattemptedactivities++;
             }
         } elseif ($completionstate == 1 || $completionstate == 2) {
-            $completedactivities++;
+            if (isset($assignment_status)) {
+                if ($assignment_status == 'saved') {
+                    $savedactivities++;
+                } else if ($assignment_status == 'submitted') {
+                    $completedactivities++;
+                } else if ($assignment_status == 'waitinggrade') {
+                    $waitingforgradeactivities++;
+                }
+            }  
         } elseif ($completionstate == 3) {
             if (($activity->module == 1)
                     && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                     && ($activity->completion == 2)
-                    && assignment_status($activity, $USER->id)) {
-                continue;
+                    && $assignment_status) {
+                        
+                if (isset($assignment_status)) {
+                    if ($assignment_status == 'saved') {
+                        $savedactivities++;
+                    } else if ($assignment_status == 'submitted') {
+                        $incompletedactivities++;
+                    } else if ($assignment_status == 'waitinggrade') {
+                        $waitingforgradeactivities++;
+                    }
+                }                
             } else {
                 $incompletedactivities++;
             }
@@ -184,21 +214,33 @@ else if ($show == 'incompleted') {
             }
             $data = $completion->get_data($activity, true, $userid = 0, null);
             $activitystate = $data->completionstate;
-
+            $assignment_status = assignment_status($activity, $USER->id, $resubmission);
             if ($activitystate == 3) {
                 if (($activity->module == 1)
                         && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                         && ($activity->completion == 2)
-                        && assignment_status($activity, $USER->id)) {
-                    continue;
+                        && $assignment_status) {
+                    
+                    if ($assignment_status == 'submitted'){
+                        echo "<tr><td align='center'>\n";
+                        $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
+                        $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
+                        echo $modtype;
+                        echo "</td>\n";
+                        echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
+                        // echo "<td align='center'>Section-$activity->section</td></tr>\n";
+                    }else{
+                        continue;
+                    }
+                }else{
+                    echo "<tr><td align='center'>\n";
+                    $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
+                    $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
+                    echo $modtype;
+                    echo "</td>\n";
+                    echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
+                    // echo "<td align='center'>Section-$activity->section</td></tr>\n";                    
                 }
-                echo "<tr><td align='center'>\n";
-                $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
-                echo $modtype;
-                echo "</td>\n";
-                echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
-                // echo "<td align='center'>Section-$activity->section</td></tr>\n";
             }
         }
     }
@@ -212,11 +254,12 @@ else if ($show == 'notattempted') {
             }
             $data = $completion->get_data($activity, true, $USER->id, null);
             $activitystate = $data->completionstate;
+            $assignment_status = assignment_status($activity, $USER->id, $resubmission);
             if ($activitystate == 0) {
                 if (($activity->module == 1)
                         && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                         && ($activity->completion == 2)
-                        && assignment_status($activity, $USER->id)) {
+                        && $assignment_status) {
                     continue;
                 }
                 echo "<tr><td align='center'>\n";
@@ -239,14 +282,14 @@ else if ($show == 'waitingforgrade') {
             }
             $data = $completion->get_data($activity, true, $USER->id, null);
             $activitystate = $data->completionstate;
-            if ($activitystate == 0) {
+            $assignment_status = assignment_status($activity, $USER->id, $resubmission);
+            if (($activitystate == 0)||($activitystate == 1)||($activitystate == 2)||($activitystate == 3)) {
                 if (($activity->module == 1)
                         && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                         && ($activity->completion == 2)
-                        && assignment_status($activity, $USER->id)) {
-                    $assignement_status = assignment_status($activity, $USER->id);
-                    if (isset($assignement_status)) {
-                        if ($assignement_status == 'submitted') {
+                        && $assignment_status) {
+                    if (isset($assignment_status)) {
+                        if ($assignment_status == 'waitinggrade') {
                             echo "<tr><td align='center'>\n";
                             $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
                             $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
@@ -268,13 +311,14 @@ else if ($show == 'waitingforgrade') {
             }
             $data = $completion->get_data($activity, true, $userid = 0, null);
             $activitystate = $data->completionstate;
-            if ($activitystate == 0) {
+            $assignment_status = assignment_status($activity, $USER->id, $resubmission);
+            if (($activitystate == 0) || ($activitystate == 1) || ($activitystate == 2) || ($activitystate == 3)) {
                 if (($activity->module == 1)
                         && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                         && ($activity->completion == 2)
-                        && assignment_status($activity, $USER->id)) {
-                    if (isset($assignement_status)) {
-                        if ($assignement_status == 'saved') {
+                        && $assignment_status) {
+                    if (isset($assignment_status)) {
+                        if ($assignment_status == 'saved') {
                             echo "<tr><td align='center'>\n";
                             $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
                             //echo $modtype;
