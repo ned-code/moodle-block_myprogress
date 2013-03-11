@@ -39,6 +39,17 @@ class block_fn_myprogress extends block_list {
      */
     function get_content() {
         global $CFG, $DB, $OUTPUT, $COURSE, $course, $USER;
+        
+        //Check sesubmission plugin
+        if ($assignCheck = $DB->get_record_sql("SELECT * FROM {$CFG->prefix}assign LIMIT 0, 1")){
+            if(isset($assignCheck->resubmission)){
+                $resubmission = true;
+            }else{
+                $resubmission = false;
+            }
+        }else{
+            $resubmission = false;
+        }
 
         if ($this->content !== NULL) {
             return $this->content;
@@ -73,9 +84,9 @@ class block_fn_myprogress extends block_list {
          if (!has_capability('block/fn_myprogress:viewblock', $context) && is_siteadmin($USER)) {
             return $this->content;
         } 
-        //print_r($activities);
+        //s_r($activities);
         if ($completion->is_enabled() && !empty($completion)) {
-
+             
             foreach ($activities as $activity) {
                 if (!$activity->visible) {
                     continue;
@@ -89,46 +100,56 @@ class block_fn_myprogress extends block_list {
                 COMPLETION_COMPLETE_PASS 2 
                 COMPLETION_COMPLETE_FAIL 3                
                 */
-                $completionstate = $data->completionstate;
-
-               
+                $completionstate = $data->completionstate; 
+                $assignment_status = assignment_status($activity, $USER->id, $resubmission);
+                //COMPLETION_INCOMPLETE
                 if ($completionstate == 0) {
                     //Show activity as complete when conditions are met                    
                     if (($activity->module == 1)
                             && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                             && ($activity->completion == 2)
-                            && assignment_status($activity, $USER->id)) {
+                            && $assignment_status) {
 
-                        //grab assignment status
-                        $assignement_status = assignment_status($activity, $USER->id);
-                        if (isset($assignement_status)) {
-                            if ($assignement_status == 'saved') {
-                                $savedactivities++;
-                            } else if ($assignement_status == 'submitted') {
-                                $waitingforgradeactivities++;
+                            if (isset($assignment_status)) {
+                                if ($assignment_status == 'saved') {
+                                    $savedactivities++;
+                                } else if ($assignment_status == 'submitted') {
+                                    $incompletedactivities++;
+                                } else if ($assignment_status == 'waitinggrade') {
+                                    $waitingforgradeactivities++;
+                                }
                             }
-                        }
                     } else {
                         $notattemptedactivities++;
                     }
+                //COMPLETION_COMPLETE - COMPLETION_COMPLETE_PASS   
                 } elseif ($completionstate == 1 || $completionstate == 2) {
-                    $completedactivities++;
+                    if (isset($assignment_status)) {
+                        if ($assignment_status == 'saved') {
+                            $savedactivities++;
+                        } else if ($assignment_status == 'submitted') {
+                            $completedactivities++;
+                        } else if ($assignment_status == 'waitinggrade') {
+                            $waitingforgradeactivities++;
+                        }
+                    }  
+                //COMPLETION_COMPLETE_FAIL    
                 } elseif ($completionstate == 3) {
                     //Show activity as complete when conditions are met 
                     if (($activity->module == 1)
                             && ($activity->modname = 'assignment' || $activity->modname == 'assign')
                             && ($activity->completion == 2)
-                            && assignment_status($activity, $USER->id)) {
+                            && $assignment_status) {
 
-                        //grab assignment status
-                        $assignement_status = assignment_status($activity, $USER->id);
-                        if (isset($assignement_status)) {
-                            if ($assignement_status == 'saved') {
-                                $savedactivities++;
-                            } else if ($assignement_status == 'submitted') {
-                                $waitingforgradeactivities++;
-                            }
-                        }
+                            if (isset($assignment_status)) {
+                                if ($assignment_status == 'saved') {
+                                    $savedactivities++;
+                                } else if ($assignment_status == 'submitted') {
+                                    $incompletedactivities++;
+                                } else if ($assignment_status == 'waitinggrade') {
+                                    $waitingforgradeactivities++;
+                                }
+                            } 
                     } else {
                         $incompletedactivities++;
                     }
