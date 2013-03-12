@@ -197,7 +197,7 @@ if ($show == 'completed') {
                 echo "<tr><td align='center'>\n";
                 $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
                 $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
-                echo $modtype;
+                echo ($modtype == 'assign') ? 'assignment' : $modtype;
                 echo "</td>\n";
                 echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
                 // echo "<td align='center'>Section-$activity->section</td></tr>\n";
@@ -225,7 +225,7 @@ else if ($show == 'incompleted') {
                         echo "<tr><td align='center'>\n";
                         $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
                         $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
-                        echo $modtype;
+                        echo ($modtype == 'assign') ? 'assignment' : $modtype;
                         echo "</td>\n";
                         echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
                         // echo "<td align='center'>Section-$activity->section</td></tr>\n";
@@ -236,7 +236,7 @@ else if ($show == 'incompleted') {
                     echo "<tr><td align='center'>\n";
                     $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
                     $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
-                    echo $modtype;
+                    echo ($modtype == 'assign') ? 'assignment' : $modtype;
                     echo "</td>\n";
                     echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
                     // echo "<td align='center'>Section-$activity->section</td></tr>\n";                    
@@ -265,7 +265,7 @@ else if ($show == 'notattempted') {
                 echo "<tr><td align='center'>\n";
                 $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
                 $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
-                echo $modtype;
+                echo ($modtype == 'assign') ? 'assignment' : $modtype;
                 echo "</td>\n";
                 echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
                 // echo "<td align='center'>Section-$activity->section</td></tr>\n";
@@ -293,7 +293,7 @@ else if ($show == 'waitingforgrade') {
                             echo "<tr><td align='center'>\n";
                             $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
                             $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
-                            echo $modtype;
+                            echo ($modtype == 'assign') ? 'assignment' : $modtype;
                             echo "</td>\n";
                             echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
                             // echo "<td align='center'>Section-$activity->section</td></tr>\n";                            
@@ -321,9 +321,9 @@ else if ($show == 'waitingforgrade') {
                         if ($assignment_status == 'saved') {
                             echo "<tr><td align='center'>\n";
                             $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                            //echo $modtype;
+                            //echo ($modtype == 'assign') ? 'assignment' : $modtype;
                             $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.gif\" HEIGHT=\"16\" WIDTH=\"16\" >";
-                            echo $modtype;
+                            echo ($modtype == 'assign') ? 'assignment' : $modtype;
                             echo "</td>\n";
                             echo "<td align='left'><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" . $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" . $activity->name . "</a></td>\n";
                             //echo "<td align='center'>Section-$activity->section</td></tr>\n";
