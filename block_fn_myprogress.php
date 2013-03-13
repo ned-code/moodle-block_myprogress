@@ -123,16 +123,25 @@ class block_fn_myprogress extends block_list {
                         $notattemptedactivities++;
                     }
                 //COMPLETION_COMPLETE - COMPLETION_COMPLETE_PASS   
-                } elseif ($completionstate == 1 || $completionstate == 2) {
-                    if (isset($assignment_status)) {
-                        if ($assignment_status == 'saved') {
-                            $savedactivities++;
-                        } else if ($assignment_status == 'submitted') {
-                            $completedactivities++;
-                        } else if ($assignment_status == 'waitinggrade') {
-                            $waitingforgradeactivities++;
-                        }
-                    }  
+                } elseif ($completionstate == 1 || $completionstate == 2) {                                     
+                    if (($activity->module == 1)
+                            && ($activity->modname = 'assignment' || $activity->modname == 'assign')
+                            && ($activity->completion == 2)
+                            && $assignment_status) {
+
+                            if (isset($assignment_status)) {
+                                if ($assignment_status == 'saved') {
+                                    $savedactivities++;
+                                } else if ($assignment_status == 'submitted') {
+                                    $completedactivities++;
+                                } else if ($assignment_status == 'waitinggrade') {
+                                    $waitingforgradeactivities++;
+                                }
+                            } 
+                    } else {
+                        $completedactivities++;
+                    }                    
+     
                 //COMPLETION_COMPLETE_FAIL    
                 } elseif ($completionstate == 3) {
                     //Show activity as complete when conditions are met 
