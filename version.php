@@ -20,12 +20,14 @@
  *
  * @package    block
  * @subpackage fn_myprogress
- * @copyright  2011 MoodleFn
- * @author     MoodleFn
+ * @author     Fernando Oliveira - MoodleFN {@link http://moodlefn.knet.ca}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version = 2011112504;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->requires = 2012120300.00; // 2.4 (Build: 20121203)
+
+
+$plugin->version = 2013031401;
+$plugin->requires = 2012062500; // 2.3 
+$plugin->maturity = MATURITY_RC;
 $plugin->component = 'block_fn_myprogress';
-$plugin->release = '2.1';
+$plugin->release = '2.4';
