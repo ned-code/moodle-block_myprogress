@@ -114,10 +114,12 @@ class block_fn_myprogress extends block_list {
                                 if ($assignment_status == 'saved') {
                                     $savedactivities++;
                                 } else if ($assignment_status == 'submitted') {
-                                    $incompletedactivities++;
+                                    $notattemptedactivities++;
                                 } else if ($assignment_status == 'waitinggrade') {
                                     $waitingforgradeactivities++;
                                 }
+                            }else{
+                                $notattemptedactivities++;
                             }
                     } else {
                         $notattemptedactivities++;
@@ -137,7 +139,9 @@ class block_fn_myprogress extends block_list {
                                 } else if ($assignment_status == 'waitinggrade') {
                                     $waitingforgradeactivities++;
                                 }
-                            } 
+                            }else{
+                                $completedactivities++;
+                            }
                     } else {
                         $completedactivities++;
                     }                    
@@ -158,6 +162,8 @@ class block_fn_myprogress extends block_list {
                                 } else if ($assignment_status == 'waitinggrade') {
                                     $waitingforgradeactivities++;
                                 }
+                            }else{
+                                $incompletedactivities++;
                             } 
                     } else {
                         $incompletedactivities++;
