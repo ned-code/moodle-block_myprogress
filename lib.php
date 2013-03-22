@@ -91,7 +91,11 @@ function assignment_status($mod, $userid, $resubmission = false) {
             if ($submissionisgraded = $DB->get_records('assign_grades', array('assignment'=>$assignment->id, 'userid'=>$USER->id, 'submissionnum' => $submission->submissionnum), 'submissionnum DESC', '*', 0, 1)) {
                 $submissionisgraded = reset($submissionisgraded);
                 if ($submissionisgraded->grade > -1){
-                    $graded = true;  
+                  if ($submission->timemodified > $submissionisgraded->timemodified) {
+                        $graded = false;  
+                    }else{
+                        $graded = true;  
+                    }
                 }else{
                     $graded = false;
                 }                
@@ -100,8 +104,14 @@ function assignment_status($mod, $userid, $resubmission = false) {
             } 
         }else{
             if ($submissionisgraded = $DB->get_record('assign_grades', array('assignment'=>$assignment->id, 'userid'=>$USER->id))) {
+                                
                 if ($submissionisgraded->grade > -1){
-                    $graded = true;  
+                    if ($submission->timemodified > $submissionisgraded->timemodified) {
+                        $graded = false;  
+                    }else{
+                        $graded = true;  
+                    }
+                    
                 }else{
                     $graded = false;
                 }                 
