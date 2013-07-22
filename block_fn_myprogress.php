@@ -179,31 +179,31 @@ class block_fn_myprogress extends block_list {
                     $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' . $course->id . '&show=completed' .
                             '&navlevel=top">' . $completedactivities . ' Completed</a>';                            
                     $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/fn_myprogress/pix/completed.gif"
-                                                        height="16" width="16" alt="">';
+                                                        class="icon" alt="">';
                                                         
                     //Incomplete                                    
                     $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' . $course->id . '&show=incompleted' .
                             '&navlevel=top">' . $incompletedactivities . ' Incomplete</a>';                            
                     $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/fn_myprogress/pix/incomplete.gif"
-                                                        height="16" width="16" alt="">';
+                                                        class="icon" alt="">';
                                                                                                            
                     //Draft                                    
                     $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' . $course->id . '&show=draft' .
                             '&navlevel=top">' . $savedactivities . ' Draft</a>';                            
                     $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/fn_myprogress/pix/saved.gif"
-                                                        height="16" width="16" alt="">';
+                                                        class="icon" alt="">';
                                                         
                     //Not Attempted                                    
                     $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' . $course->id . '&show=notattempted' .
                             '&navlevel=top">' . $notattemptedactivities . ' Not Attempted</a>';                            
                     $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/fn_myprogress/pix/notattempted.gif"
-                                                        height="16" width="16" alt="">';
+                                                        class="icon" alt="">';
                     
                     //Waiting for grade                                    
                     $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' . $course->id . '&show=waitingforgrade' .
                             '&navlevel=top">' . $waitingforgradeactivities . ' Waiting for grade</a>';                            
                     $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/fn_myprogress/pix/unmarked.gif"
-                                                        height="16" width="16" alt="">';        
+                                                        class="icon" alt="">';        
                                                         
                                                                     
                 }           
@@ -211,7 +211,7 @@ class block_fn_myprogress extends block_list {
             $this->content->items[] = "<p>Completion tracking is not enabled at the site level.You must turn on this feature
                                         on if you wish to use to use the Assignment Tracking System for this course </p>";
             $this->content->icons[] = '<img src="' . $CFG->wwwroot . '/blocks/fn_myprogress/pix/warning.gif"
-                                                        height="16" width="16" alt="">';
+                                                        class="icon" alt="">';
         }
         return $this->content;  
     }
