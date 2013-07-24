@@ -1,7 +1,7 @@
 <?php
 
 require_once($CFG->libdir . '/completionlib.php');
-require_once('lib.php');
+require_once($CFG->dirroot . '/blocks/fn_myprogress/lib.php'); 
 
 /**
  *
@@ -39,17 +39,6 @@ class block_fn_myprogress extends block_list {
      */
     function get_content() {
         global $CFG, $DB, $OUTPUT, $COURSE, $course, $USER;
-        
-        //Check sesubmission plugin
-        if ($assignCheck = $DB->get_record_sql("SELECT * FROM {$CFG->prefix}assign LIMIT 0, 1")){
-            if(isset($assignCheck->attemptreopenmethod)){
-                $resubmission = true;
-            }else{
-                $resubmission = false;
-            }
-        }else{
-            $resubmission = false;
-        }
 
         if ($this->content !== NULL) {
             return $this->content;
@@ -71,28 +60,24 @@ class block_fn_myprogress extends block_list {
         $savedactivities = 0;
         $notattemptedactivities = 0;
         $waitingforgradeactivities = 0;
-        $savedactivities = 0;
 
         $course = $this->page->course;
-        require_once($CFG->dirroot . '/course/lib.php');
-        require_once($CFG->dirroot . '/blocks/fn_myprogress/lib.php');
-
-        $modinfo = get_fast_modinfo($course);
-        $modfullnames = array();
+        
         $completion = new completion_info($course);
         $activities = $completion->get_activities(); 
          if (!has_capability('block/fn_myprogress:viewblock', $context) && is_siteadmin($USER)) {
             return $this->content;
         } 
-        //s_r($activities);
+        
         if ($completion->is_enabled() && !empty($completion)) {
              
             foreach ($activities as $activity) {
                 if (!$activity->visible) {
                     continue;
                 }
-
+                
                 $data = $completion->get_data($activity, true, $userid = 0, null); 
+                
                 
                 /*
                 COMPLETION_INCOMPLETE 0
@@ -101,9 +86,10 @@ class block_fn_myprogress extends block_list {
                 COMPLETION_COMPLETE_FAIL 3                
                 */
                 $completionstate = $data->completionstate; 
-                $assignment_status = assignment_status($activity, $USER->id, $resubmission);
+                $assignment_status = assignment_status($activity, $USER->id);
+                               
                 //COMPLETION_INCOMPLETE
-                if ($completionstate == 0) {
+                if ($completionstate == 0) { 
                     //Show activity as complete when conditions are met                    
                     if (($activity->module == 1)
                             && ($activity->modname == 'assignment' || $activity->modname == 'assign')
@@ -125,9 +111,9 @@ class block_fn_myprogress extends block_list {
                         $notattemptedactivities++;
                     }
                 //COMPLETION_COMPLETE - COMPLETION_COMPLETE_PASS   
-                } elseif ($completionstate == 1 || $completionstate == 2) {                                     
+                } elseif ($completionstate == 1 || $completionstate == 2) {                               
                     if (($activity->module == 1)
-                            && ($activity->modname = 'assignment' || $activity->modname == 'assign')
+                            && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                             && ($activity->completion == 2)
                             && $assignment_status) {
 
@@ -150,7 +136,7 @@ class block_fn_myprogress extends block_list {
                 } elseif ($completionstate == 3) {
                     //Show activity as complete when conditions are met 
                     if (($activity->module == 1)
-                            && ($activity->modname = 'assignment' || $activity->modname == 'assign')
+                            && ($activity->modname == 'assignment' || $activity->modname == 'assign')
                             && ($activity->completion == 2)
                             && $assignment_status) {
 
@@ -172,7 +158,7 @@ class block_fn_myprogress extends block_list {
                     // do nothing   
                 }
             }
-                $context = get_context_instance(CONTEXT_COURSE, $COURSE->id);
+               
                 if (has_capability('block/fn_myprogress:viewblock', $context) && !is_siteadmin($USER)) {
                     
                     //Completed                              

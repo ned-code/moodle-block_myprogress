@@ -8,10 +8,10 @@
  * @return saved or submitted
  * @todo Finish documenting this function
  */ 
+require_once ($CFG->dirroot.'/mod/assignment/lib.php');
 
-function assignment_status($mod, $userid, $resubmission = false) {
-    global $CFG, $DB, $USER, $SESSION;
-    require_once ($CFG->dirroot.'/mod/assignment/lib.php');    
+function assignment_status($mod, $userid) {
+    global $CFG, $DB, $USER, $SESSION;          
 
     if(isset($SESSION->completioncache)){
         unset($SESSION->completioncache);
