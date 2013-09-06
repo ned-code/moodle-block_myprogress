@@ -1,4 +1,4 @@
-MoodleFN - My Progress
+MoodleFN - My Progress (2.5)
 ============================================
 
 See this PDF document for more information about this plugin:
