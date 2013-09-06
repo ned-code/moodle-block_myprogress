@@ -9,6 +9,7 @@ See this PDF document for more information about this plugin: http://moodlefn.co
 - Type: Block
 - Moodle version required: 2.4 or 2.5
 - Git Repository: https://github.com/fernandooliveira/moodle-block_myprogress
-- Support and Feedback: www.moodlefn.knet.ca 
+- Support and Feedback: www.moodlefn.knet.ca
+- List all MoodleFN Plugins: https://moodle.org/plugins/browse.php?list=contributor&id=13267 
 
 
