@@ -14,20 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
- * Keeps track of the version number
- *
- * @package    block
- * @subpackage fn_myprogress
- * @author     Fernando Oliveira - MoodleFN {@link http://moodlefn.knet.ca}
+ * @package    block_ned_myprogress
+ * @copyright  Michael Gardener <mgardener@cissq.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-
-$plugin->version = 2013032201;
-$plugin->requires = 2013051400; // 2.5 
-$plugin->maturity = MATURITY_RC;
-$plugin->component = 'block_fn_myprogress';
+$plugin->version = 2016042200;
+$plugin->requires = 2013051400;
+$plugin->component = 'block_ned_myprogress';
 $plugin->release = '2.4';

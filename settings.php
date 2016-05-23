@@ -20,26 +20,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$capabilities = array(
-    'block/ned_myprogress:addinstance' => array(
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-        'clonepermissionsfrom' => 'moodle/site:manageblocks'
-    ),
-    'block/ned_myprogress:viewblock' => array(
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            'user' => CAP_PREVENT,
-            'guest' => CAP_PREVENT,
-            'student' => CAP_ALLOW,
-            'teacher' => CAP_PREVENT,
-            'editingteacher' => CAP_PREVENT,
-            'manager' => CAP_PREVENT
-        )
+defined('MOODLE_INTERNAL') || die();
+
+$settings->add(
+    new admin_setting_configselect(
+        'block_ned_myprogress/showdraft',
+        get_string('showdraft', 'block_ned_myprogress'),
+        '',
+        '1',
+        array(0 => get_string('no'), 1 => get_string('yes'))
     )
 );
