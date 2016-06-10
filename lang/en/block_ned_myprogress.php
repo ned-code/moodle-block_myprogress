@@ -21,7 +21,7 @@
  */
 
 $string['pluginname'] = 'NED My Progress';
-$string['blocktitle'] = 'My Progress';
+$string['blocktitle'] = 'NED My Progress';
 $string['breadcrumb:waitingforgrade'] = 'Activities waiting for grade';
 $string['title:waitingforgrade'] = 'Following activites are waiting for grade';
 $string['breadcrumb:activitiescompleted'] = 'Completed Activities';
