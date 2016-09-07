@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_ned_myprogress
+ * @package    block_fn_myprogress
  * @copyright  Michael Gardener <mgardener@cissq.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -24,8 +24,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $settings->add(
     new admin_setting_configselect(
-        'block_ned_myprogress/showdraft',
-        get_string('showdraft', 'block_ned_myprogress'),
+        'block_fn_myprogress/showdraft',
+        get_string('showdraft', 'block_fn_myprogress'),
         '',
         '1',
         array(0 => get_string('no'), 1 => get_string('yes'))

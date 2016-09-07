@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_ned_myprogress
+ * @package    block_fn_myprogress
  * @copyright  Michael Gardener <mgardener@cissq.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../config.php');
 require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/blocks/ned_myprogress/lib.php');
+require_once($CFG->dirroot . '/blocks/fn_myprogress/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
 
 global $CFG, $DB, $OUTPUT, $PAGE, $COURSE;
@@ -35,7 +35,7 @@ $show = optional_param('show', 'notloggedin', PARAM_ALPHA);
 // Paging options.
 $page = optional_param('page', 0, PARAM_INT);
 $perpage = optional_param('perpage', 2, PARAM_INT);
-$PAGE->set_url('/blocks/ned_myprogress/listactivities.php', array('id' => $id, 'show' => $show, 'navlevel' => 'top'));
+$PAGE->set_url('/blocks/fn_myprogress/listactivities.php', array('id' => $id, 'show' => $show, 'navlevel' => 'top'));
 
 if (!$course = $DB->get_record("course", array("id" => $id))) {
     print_error("Course ID was incorrect");
@@ -69,7 +69,7 @@ if ($completion->is_enabled()) {
         }
         $data = $completion->get_data($activity, true, $USER->id, null);
         $completionstate = $data->completionstate;
-        $assignmentstatus = block_ned_myprogress_assignment_status($activity, $USER->id, $resubmission);
+        $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id, $resubmission);
         if ($completionstate == 0) {
             if (($activity->module == 1)
                 && ($activity->modname == 'assignment' || $activity->modname == 'assign')
@@ -127,34 +127,34 @@ switch ($show) {
     case 'completed':
 
         $activitiesresults = $completedactivities;
-        $name = get_string('breadcrumb:activitiescompleted', 'block_ned_myprogress');
-        $title = get_string('title:completed', 'block_ned_myprogress') . " (Total:" . $completedactivities . " Activities)";
+        $name = get_string('breadcrumb:activitiescompleted', 'block_fn_myprogress');
+        $title = get_string('title:completed', 'block_fn_myprogress') . " (Total:" . $completedactivities . " Activities)";
         break;
 
     case 'incompleted':
 
         $activitiesresults = $incompletedactivities;
-        $name = get_string('breadcrumb:activitiesincompleted', 'block_ned_myprogress');
-        $title = get_string('title:incompleted', 'block_ned_myprogress') . " (Total:" . $incompletedactivities . " Activities)";
+        $name = get_string('breadcrumb:activitiesincompleted', 'block_fn_myprogress');
+        $title = get_string('title:incompleted', 'block_fn_myprogress') . " (Total:" . $incompletedactivities . " Activities)";
         break;
 
     case 'draft':
 
         $activitiesresults = $savedactivities;
-        $name = get_string('breadcrumb:draft', 'block_ned_myprogress');
-        $title = get_string('title:saved', 'block_ned_myprogress') . " (Total:" . $savedactivities . " Activities)";
+        $name = get_string('breadcrumb:draft', 'block_fn_myprogress');
+        $title = get_string('title:saved', 'block_fn_myprogress') . " (Total:" . $savedactivities . " Activities)";
         break;
 
     case 'notattempted':
         $activitiesresults = $notattemptedactivities;
-        $name = get_string('breadcrumb:notattempted', 'block_ned_myprogress');
-        $title = get_string('title:notattempted', 'block_ned_myprogress') . " (Total:" . $notattemptedactivities . " Activities)";
+        $name = get_string('breadcrumb:notattempted', 'block_fn_myprogress');
+        $title = get_string('title:notattempted', 'block_fn_myprogress') . " (Total:" . $notattemptedactivities . " Activities)";
         break;
 
     case 'waitingforgrade':
         $activitiesresults = $waitingforgradeactivities;
-        $name = get_string('breadcrumb:waitingforgrade', 'block_ned_myprogress');
-        $title = get_string('title:waitingforgrade', 'block_ned_myprogress') . " (Total:" .
+        $name = get_string('breadcrumb:waitingforgrade', 'block_fn_myprogress');
+        $title = get_string('title:waitingforgrade', 'block_fn_myprogress') . " (Total:" .
             $waitingforgradeactivities . " Activities)";
         break;
     default:
@@ -187,7 +187,7 @@ if (($show == 'completed' || $show == 'incompleted'
     echo "</tr>";
 } else {
     echo '<div style="text-align:center; padding:12px;">';
-    echo "No activity with status " . get_string($show, 'block_ned_myprogress') . "";
+    echo "No activity with status " . get_string($show, 'block_fn_myprogress') . "";
     echo "</div>";
 }
 
@@ -222,7 +222,7 @@ if ($show == 'completed') {
             }
             $data = $completion->get_data($activity, true, $userid = 0, null);
             $activitystate = $data->completionstate;
-            $assignmentstatus = block_ned_myprogress_assignment_status($activity, $USER->id, $resubmission);
+            $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id, $resubmission);
             if ($activitystate == 3) {
                 if (($activity->module == 1)
                     && ($activity->modname == 'assignment' || $activity->modname == 'assign')
@@ -266,7 +266,7 @@ if ($show == 'completed') {
             }
             $data = $completion->get_data($activity, true, $USER->id, null);
             $activitystate = $data->completionstate;
-            $assignmentstatus = block_ned_myprogress_assignment_status($activity, $USER->id, $resubmission);
+            $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id, $resubmission);
             if ($activitystate == 0) {
                 if (($activity->module == 1)
                     && ($activity->modname == 'assignment' || $activity->modname == 'assign')
@@ -295,7 +295,7 @@ if ($show == 'completed') {
             }
             $data = $completion->get_data($activity, true, $USER->id, null);
             $activitystate = $data->completionstate;
-            $assignmentstatus = block_ned_myprogress_assignment_status($activity, $USER->id, $resubmission);
+            $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id, $resubmission);
             if (($activitystate == 0)||($activitystate == 1)||($activitystate == 2)||($activitystate == 3)) {
                 if (($activity->module == 1)
                     && ($activity->modname == 'assignment' || $activity->modname == 'assign')
@@ -327,7 +327,7 @@ if ($show == 'completed') {
             }
             $data = $completion->get_data($activity, true, $userid = 0, null);
             $activitystate = $data->completionstate;
-            $assignmentstatus = block_ned_myprogress_assignment_status($activity, $USER->id, $resubmission);
+            $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id, $resubmission);
             if (($activitystate == 0) || ($activitystate == 1) || ($activitystate == 2) || ($activitystate == 3)) {
                 if (($activity->module == 1)
                     && ($activity->modname == 'assignment' || $activity->modname == 'assign')

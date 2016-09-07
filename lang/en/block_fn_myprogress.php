@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_ned_myprogress
+ * @package    block_fn_myprogress
  * @copyright  Michael Gardener <mgardener@cissq.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -43,12 +43,9 @@ $string['blocksettings'] = 'Block settings';
 $string['setblocktitle'] = 'Title';
 $string['config_title'] = 'NED My Progress';
 $string['config_title_help'] = '<p>Using this setting you can changes the tilte of the  block</p>';
-$string['ned_myprogress:viewblock'] = 'Show My Progress';
-$string['ned_myprogress:addinstance'] = 'Add a My Progress block';
+$string['fn_myprogress:viewblock'] = 'Show My Progress';
+$string['fn_myprogress:addinstance'] = 'Add a My Progress block';
 $string['disabledviewmessage'] = '<p>Completion tracking is not enabled at the site level.You must turn on this feature
                                         on if you wish to use to use the Assignment Tracking System for this course </p>';
 $string['showdraft'] = 'Show draft';
-
-
-
-
+$string['blockinfo'] = 'Block info';

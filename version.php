@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_ned_myprogress
+ * @package    block_fn_myprogress
  * @copyright  Michael Gardener <mgardener@cissq.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version = 2016042200;
+$plugin->version = 2016090600;
 $plugin->requires = 2013051400;
-$plugin->component = 'block_ned_myprogress';
+$plugin->component = 'block_fn_myprogress';
 $plugin->release = '2.4';

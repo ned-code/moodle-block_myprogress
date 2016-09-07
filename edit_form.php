@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_ned_myprogress
+ * @package    block_fn_myprogress
  * @copyright  Michael Gardener <mgardener@cissq.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,22 +30,25 @@ require_once(dirname(__FILE__) . '/../../config.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class block_ned_myprogress_edit_form extends block_edit_form {
+class block_fn_myprogress_edit_form extends block_edit_form {
 
     protected function specific_definition($mform) {
 
         // Section header title according to language file.
-        $mform->addElement('header', 'configheader', get_string('blocksettings', 'block_ned_myprogress'));
+        $mform->addElement('header', 'configheader', get_string('blocksettings', 'block_fn_myprogress'));
 
         // Config title for the block.
-        $mform->addElement('text', 'config_title', get_string('setblocktitle', 'block_ned_myprogress'));
+        $mform->addElement('text', 'config_title', get_string('setblocktitle', 'block_fn_myprogress'));
         $mform->setType('config_title', PARAM_TEXT);
-        $mform->setDefault('config_title', get_string('blocktitle', 'block_ned_myprogress'));
-        $mform->addHelpButton('config_title', 'config_title', 'block_ned_myprogress');
+        $mform->setDefault('config_title', get_string('blocktitle', 'block_fn_myprogress'));
+        $mform->addHelpButton('config_title', 'config_title', 'block_fn_myprogress');
 
         $yesno = array(0 => get_string('no'), 1 => get_string('yes'));
         $mform->addElement('select', 'config_showdraft',
-            get_string('showdraft', 'block_ned_myprogress'), $yesno);
+            get_string('showdraft', 'block_fn_myprogress'), $yesno);
         $mform->setDefault('config_showdraft', 1);
+
+        $mform->addElement('static', 'blockinfo', get_string('blockinfo', 'block_fn_myprogress'),
+            '<a target="_blank" href="http://ned.ca/my-progress">http://ned.ca/my-progress</a>');
     }
 }

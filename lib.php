@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_ned_myprogress
+ * @package    block_fn_myprogress
  * @copyright  Michael Gardener <mgardener@cissq.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once($CFG->dirroot.'/mod/assignment/lib.php');
 
-function block_ned_myprogress_assignment_status($mod, $userid) {
+function block_fn_myprogress_assignment_status($mod, $userid) {
     global $CFG, $DB, $SESSION;
 
     if (isset($SESSION->completioncache)) {

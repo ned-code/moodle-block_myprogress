@@ -15,23 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_ned_myprogress
+ * @package    block_fn_myprogress
  * @copyright  Michael Gardener <mgardener@cissq.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once($CFG->libdir . '/completionlib.php');
-require_once($CFG->dirroot . '/blocks/ned_myprogress/lib.php');
+require_once($CFG->dirroot . '/blocks/fn_myprogress/lib.php');
 
 /**
  *
  * base class for block
  * @author     MoodleFn
  */
-class block_ned_myprogress extends block_list {
+class block_fn_myprogress extends block_list {
 
     public function init() {
-        $this->title = get_string('blocktitle', 'block_ned_myprogress');
+        $this->title = get_string('blocktitle', 'block_fn_myprogress');
     }
 
     /**
@@ -46,7 +46,7 @@ class block_ned_myprogress extends block_list {
         $this->course = $course;
 
         if (empty($this->config->title)) {
-            $this->title = get_string('blocktitle', 'block_ned_myprogress');
+            $this->title = get_string('blocktitle', 'block_fn_myprogress');
         } else {
             $this->title = $this->config->title;
         }
@@ -83,7 +83,7 @@ class block_ned_myprogress extends block_list {
 
         $completion = new completion_info($course);
         $activities = $completion->get_activities();
-        if (!has_capability('block/ned_myprogress:viewblock', $context) && is_siteadmin($USER)) {
+        if (!has_capability('block/fn_myprogress:viewblock', $context) && is_siteadmin($USER)) {
             return $this->content;
         }
 
@@ -91,7 +91,7 @@ class block_ned_myprogress extends block_list {
         if (isset($this->config->showdraft)) {
             $showdraft = $this->config->showdraft;
         } else {
-            $showdraft = get_config('block_ned_myprogress', 'showdraft');
+            $showdraft = get_config('block_fn_myprogress', 'showdraft');
         }
 
         if ($completion->is_enabled() && !empty($completion)) {
@@ -104,7 +104,7 @@ class block_ned_myprogress extends block_list {
                 $data = $completion->get_data($activity, true, $userid = 0, null);
 
                 $completionstate = $data->completionstate;
-                $assignmentstatus = block_ned_myprogress_assignment_status($activity, $USER->id);
+                $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id);
 
                 // COMPLETION_INCOMPLETE.
                 if ($completionstate == 0) {
@@ -175,66 +175,66 @@ class block_ned_myprogress extends block_list {
                 }
             }
 
-            if (has_capability('block/ned_myprogress:viewblock', $context) && !is_siteadmin($USER)) {
+            if (has_capability('block/fn_myprogress:viewblock', $context) && !is_siteadmin($USER)) {
                 // Completed.
                 if ($incompletedactivities) {
-                    $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/ned_myprogress/listactivities.php?id=' .
+                    $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' .
                         $course->id . '&show=completed' .
                         '&navlevel=top">' . $completedactivities . ' '.
-                        get_string('completedsuccessful', 'block_ned_myprogress').'</a>';
+                        get_string('completedsuccessful', 'block_fn_myprogress').'</a>';
                 } else {
-                    $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/ned_myprogress/listactivities.php?id=' .
+                    $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' .
                         $course->id . '&show=completed' .
                         '&navlevel=top">' . $completedactivities . ' '.
-                        get_string('completed', 'block_ned_myprogress').'</a>';
+                        get_string('completed', 'block_fn_myprogress').'</a>';
                 }
                 $this->content->icons[] = '<img src="'.
-                    $OUTPUT->pix_url('completed', 'block_ned_myprogress').'" class="icon" alt="">';
+                    $OUTPUT->pix_url('completed', 'block_fn_myprogress').'" class="icon" alt="">';
 
                 // Incomplete.
                 if ($incompletedactivities) {
-                    $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/ned_myprogress/listactivities.php?id=' .
+                    $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' .
                         $course->id . '&show=incompleted' .
                         '&navlevel=top">' . $incompletedactivities . ' ' .
-                        get_string('completedunsuccessful', 'block_ned_myprogress') . '</a>';
+                        get_string('completedunsuccessful', 'block_fn_myprogress') . '</a>';
 
                     $this->content->icons[] = '<img src="' .
-                        $OUTPUT->pix_url('incomplete', 'block_ned_myprogress') . '" class="icon" alt="">';
+                        $OUTPUT->pix_url('incomplete', 'block_fn_myprogress') . '" class="icon" alt="">';
                 }
 
                 // Draft.
                 if ($showdraft && $savedactivities) {
-                    $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/ned_myprogress/listactivities.php?id=' .
+                    $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' .
                         $course->id . '&show=draft' .
                         '&navlevel=top">' . $savedactivities . ' '.
-                        get_string('draft', 'block_ned_myprogress').'</a>';
+                        get_string('draft', 'block_fn_myprogress').'</a>';
 
                     $this->content->icons[] = '<img src="' .
-                        $OUTPUT->pix_url('saved', 'block_ned_myprogress') . '" class="icon" alt="">';
+                        $OUTPUT->pix_url('saved', 'block_fn_myprogress') . '" class="icon" alt="">';
                 }
 
                 // Not Attempted.
-                $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/ned_myprogress/listactivities.php?id=' .
+                $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' .
                     $course->id . '&show=notattempted' .
                     '&navlevel=top">' . $notattemptedactivities . ' '.
-                    get_string('notattempted', 'block_ned_myprogress').'</a>';
+                    get_string('notattempted', 'block_fn_myprogress').'</a>';
 
                 $this->content->icons[] = '<img src="'.
-                    $OUTPUT->pix_url('notattempted', 'block_ned_myprogress').'" class="icon" alt="">';
+                    $OUTPUT->pix_url('notattempted', 'block_fn_myprogress').'" class="icon" alt="">';
 
                 // Waiting for grade.
-                $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/ned_myprogress/listactivities.php?id=' .
+                $this->content->items[] = '<a href="' . $CFG->wwwroot . '/blocks/fn_myprogress/listactivities.php?id=' .
                     $course->id . '&show=waitingforgrade' .
                     '&navlevel=top">' . $waitingforgradeactivities . ' '.
-                    get_string('waitingforgrade', 'block_ned_myprogress').'</a>';
+                    get_string('waitingforgrade', 'block_fn_myprogress').'</a>';
 
                 $this->content->icons[] = '<img src="'.
-                    $OUTPUT->pix_url('unmarked', 'block_ned_myprogress').'" class="icon" alt="">';
+                    $OUTPUT->pix_url('unmarked', 'block_fn_myprogress').'" class="icon" alt="">';
             }
         } else {
-            $this->content->items[] = get_string('disabledviewmessage', 'block_ned_myprogress');
+            $this->content->items[] = get_string('disabledviewmessage', 'block_fn_myprogress');
             $this->content->icons[] = '<img src="'.
-                $OUTPUT->pix_url('warning', 'block_ned_myprogress').'" class="icon" alt="">';
+                $OUTPUT->pix_url('warning', 'block_fn_myprogress').'" class="icon" alt="">';
         }
         return $this->content;
     }
