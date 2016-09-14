@@ -26,4 +26,4 @@
 $plugin->version = 2016090600;
 $plugin->requires = 2013051400;
 $plugin->component = 'block_fn_myprogress';
-$plugin->release = '2.4';
+$plugin->release = '3.1.1';
