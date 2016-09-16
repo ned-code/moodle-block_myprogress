@@ -37,6 +37,9 @@ class block_fn_myprogress_edit_form extends block_edit_form {
         // Section header title according to language file.
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block_fn_myprogress'));
 
+        $mform->addElement('static', 'blockinfo', get_string('blockinfo', 'block_fn_myprogress'),
+            '<a target="_blank" href="http://ned.ca/my-progress">http://ned.ca/my-progress</a>');
+
         // Config title for the block.
         $mform->addElement('text', 'config_title', get_string('setblocktitle', 'block_fn_myprogress'));
         $mform->setType('config_title', PARAM_TEXT);
@@ -47,8 +50,5 @@ class block_fn_myprogress_edit_form extends block_edit_form {
         $mform->addElement('select', 'config_showdraft',
             get_string('showdraft', 'block_fn_myprogress'), $yesno);
         $mform->setDefault('config_showdraft', 1);
-
-        $mform->addElement('static', 'blockinfo', get_string('blockinfo', 'block_fn_myprogress'),
-            '<a target="_blank" href="http://ned.ca/my-progress">http://ned.ca/my-progress</a>');
     }
 }
