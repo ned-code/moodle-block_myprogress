@@ -203,8 +203,7 @@ if ($show == 'completed') {
             if ($activitystate == 1 || $activitystate == 2) {
                 echo "<tr><td align='center'>\n";
                 $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                    "HEIGHT=\"20\" WIDTH=\"20\" >";
+                $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
                 echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
                 echo "</td>\n";
                 echo "<td align='left'><a href='" .
@@ -232,8 +231,7 @@ if ($show == 'completed') {
                     if ($assignmentstatus == 'submitted') {
                         echo "<tr><td align='center'>\n";
                         $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                        $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                            "HEIGHT=\"20\" WIDTH=\"20\" >";
+                        $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
                         echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
                         echo "</td>\n";
                         echo "<td align='left'><a href='" .
@@ -246,8 +244,7 @@ if ($show == 'completed') {
                 } else {
                     echo "<tr><td align='center'>\n";
                     $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                    $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                        "EIGHT=\"20\" WIDTH=\"20\" >";
+                    $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
                     echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
                     echo "</td>\n";
                     echo "<td align='left'><a href='" .
@@ -276,8 +273,7 @@ if ($show == 'completed') {
                 }
                 echo "<tr><td align='center'>\n";
                 $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                    "HEIGHT=\"20\" WIDTH=\"20\" >";
+                $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
                 echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
                 echo "</td>\n";
                 echo "<td align='left'><a href='" .
@@ -305,8 +301,7 @@ if ($show == 'completed') {
                         if ($assignmentstatus == 'waitinggrade') {
                             echo "<tr><td align='center'>\n";
                             $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                            $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                                "HEIGHT=\"20\" WIDTH=\"20\" >";
+                            $$modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
                             echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
                             echo "</td>\n";
                             echo "<td align='left'><a href='" .
@@ -337,8 +332,7 @@ if ($show == 'completed') {
                         if ($assignmentstatus == 'saved') {
                             echo "<tr><td align='center'>\n";
                             $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                            $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                                "HEIGHT=\"20\" WIDTH=\"20\" >";
+                            $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
                             echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
                             echo "</td>\n";
                             echo "<td align='left'><a href='" .

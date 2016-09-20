@@ -23,7 +23,7 @@
  * @developer  Michael Gardener <mgardener@cissq.com>
  */
 
-$plugin->version = 2016091500;
+$plugin->version = 2016091900;
 $plugin->requires = 2013051400;
 $plugin->component = 'block_fn_myprogress';
 $plugin->release = '3.1.1';

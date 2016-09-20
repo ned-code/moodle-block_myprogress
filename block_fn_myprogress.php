@@ -73,6 +73,11 @@ class block_fn_myprogress extends block_list {
         $this->content->items = array();
         $this->content->icons = array();
         $this->content->footer = '';
+
+        if (!has_capability('block/fn_myprogress:viewblock', $context) || is_siteadmin($USER)) {
+            return $this->content;
+        }
+
         $completedactivities = 0;
         $incompletedactivities = 0;
         $savedactivities = 0;
@@ -83,9 +88,6 @@ class block_fn_myprogress extends block_list {
 
         $completion = new completion_info($course);
         $activities = $completion->get_activities();
-        if (!has_capability('block/fn_myprogress:viewblock', $context) && is_siteadmin($USER)) {
-            return $this->content;
-        }
 
         // Draft config.
         if (isset($this->config->showdraft)) {
