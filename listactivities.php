@@ -301,7 +301,7 @@ if ($show == 'completed') {
                         if ($assignmentstatus == 'waitinggrade') {
                             echo "<tr><td align='center'>\n";
                             $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                            $$modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
+                            $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
                             echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
                             echo "</td>\n";
                             echo "<td align='left'><a href='" .
