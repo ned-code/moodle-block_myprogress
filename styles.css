@@ -105,7 +105,8 @@
 #page-blocks-fn_myprogress-listactivities .singleselect {
     display:inline-block;
 }
-#page-blocks-fn_myprogress-listactivities .fnmarkingblock thead, .fnmarkingblock tbody td {
+#page-blocks-fn_myprogress-listactivities .fnmarkingblock thead,
+#page-blocks-fn_myprogress-listactivities .fnmarkingblock tbody td {
     border:1px solid #555555 !important;
 }
 #page-blocks-fn_myprogress-listactivities .no-assign {
