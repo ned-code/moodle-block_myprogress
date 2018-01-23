@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->libdir . '/completionlib.php');
 require_once($CFG->dirroot . '/blocks/fn_myprogress/lib.php');
 
@@ -85,9 +87,7 @@ class block_fn_myprogress extends block_list {
         $waitingforgradeactivities = 0;
 
         $course = $this->page->course;
-
-        $completion = new completion_info($course);
-        $activities = $completion->get_activities();
+        $activities = block_fn_myprogress_get_gradable_activities($course->id, $USER->id);
 
         // Draft config.
         if (isset($this->config->showdraft)) {
@@ -96,86 +96,14 @@ class block_fn_myprogress extends block_list {
             $showdraft = get_config('block_fn_myprogress', 'showdraft');
         }
 
-        if ($completion->is_enabled() && !empty($completion)) {
-
-            foreach ($activities as $activity) {
-                if (!$activity->visible) {
-                    continue;
-                }
-
-                $data = $completion->get_data($activity, true, $userid = 0, null);
-
-                $completionstate = $data->completionstate;
-                $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id);
-
-                // COMPLETION_INCOMPLETE.
-                if ($completionstate == 0) {
-                    // Show activity as complete when conditions are met.
-                    if (($activity->module == 1)
-                        && ($activity->modname == 'assignment' || $activity->modname == 'assign')
-                        && ($activity->completion == 2)
-                        && $assignmentstatus) {
-
-                        if (isset($assignmentstatus)) {
-                            if ($assignmentstatus == 'saved') {
-                                $savedactivities++;
-                            } else if ($assignmentstatus == 'submitted') {
-                                $notattemptedactivities++;
-                            } else if ($assignmentstatus == 'waitinggrade') {
-                                $waitingforgradeactivities++;
-                            }
-                        } else {
-                            $notattemptedactivities++;
-                        }
-                    } else {
-                        $notattemptedactivities++;
-                    }
-                    // COMPLETION_COMPLETE - COMPLETION_COMPLETE_PASS.
-                } else if ($completionstate == 1 || $completionstate == 2) {
-                    if (($activity->module == 1)
-                        && ($activity->modname == 'assignment' || $activity->modname == 'assign')
-                        && ($activity->completion == 2)
-                        && $assignmentstatus) {
-
-                        if (isset($assignmentstatus)) {
-                            if ($assignmentstatus == 'saved') {
-                                $savedactivities++;
-                            } else if ($assignmentstatus == 'submitted') {
-                                $completedactivities++;
-                            } else if ($assignmentstatus == 'waitinggrade') {
-                                $waitingforgradeactivities++;
-                            }
-                        } else {
-                            $completedactivities++;
-                        }
-                    } else {
-                        $completedactivities++;
-                    }
-
-                    // COMPLETION_COMPLETE_FAIL.
-                } else if ($completionstate == 3) {
-                    // Show activity as complete when conditions are met.
-                    if (($activity->module == 1)
-                        && ($activity->modname == 'assignment' || $activity->modname == 'assign')
-                        && ($activity->completion == 2)
-                        && $assignmentstatus) {
-
-                        if (isset($assignmentstatus)) {
-                            if ($assignmentstatus == 'saved') {
-                                $savedactivities++;
-                            } else if ($assignmentstatus == 'submitted') {
-                                $incompletedactivities++;
-                            } else if ($assignmentstatus == 'waitinggrade') {
-                                $waitingforgradeactivities++;
-                            }
-                        } else {
-                            $incompletedactivities++;
-                        }
-                    } else {
-                        $incompletedactivities++;
-                    }
-                }
-            }
+        if ($activities) {
+            list($completedactivities,
+                $incompletedactivities,
+                $savedactivities,
+                $notattemptedactivities,
+                $waitingforgradeactivities,
+                $status
+            ) = block_fn_myprogress_get_activity_status_numbers($activities);
 
             if (has_capability('block/fn_myprogress:viewblock', $context) && !is_siteadmin($USER)) {
                 // Completed.

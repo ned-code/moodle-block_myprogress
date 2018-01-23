@@ -49,3 +49,7 @@ $string['disabledviewmessage'] = '<p>Completion tracking is not enabled at the s
                                         on if you wish to use to use the Assignment Tracking System for this course </p>';
 $string['showdraft'] = 'Show draft';
 $string['blockinfo'] = 'Block info';
+$string['activities'] = 'Activities';
+$string['activitytype'] = 'Activity type';
+$string['activityorresourcename'] = 'Activity or Resource Name';
+$string['yourgrade'] = 'Your grade';

@@ -23,7 +23,9 @@
  * @developer  Michael Gardener <mgardener@cissq.com>
  */
 
-$plugin->version = 2016120100;
+defined('MOODLE_INTERNAL') || die();
+
+$plugin->version = 2018012200;
 $plugin->requires = 2013051400;
 $plugin->component = 'block_fn_myprogress';
 $plugin->release = '3.1.2';

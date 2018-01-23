@@ -25,10 +25,6 @@ require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/blocks/fn_myprogress/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
 
-global $CFG, $DB, $OUTPUT, $PAGE, $COURSE;
-
-$resubmission = true;
-
 $id = required_param('id', PARAM_INT);      // Course ID.
 $show = optional_param('show', 'notloggedin', PARAM_ALPHA);
 
@@ -59,67 +55,15 @@ $notattemptedactivities = 0;
 $waitingforgradeactivities = 0;
 $savedactivities = 0;
 
-$completion = new completion_info($course);
-$activities = $completion->get_activities();
-
-if ($completion->is_enabled()) {
-    foreach ($activities as $activity) {
-        if (!$activity->visible) {
-            continue;
-        }
-        $data = $completion->get_data($activity, true, $USER->id, null);
-        $completionstate = $data->completionstate;
-        $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id, $resubmission);
-        if ($completionstate == 0) {
-            if (($activity->module == 1)
-                && ($activity->modname == 'assignment' || $activity->modname == 'assign')
-                && ($activity->completion == 2)
-                && $assignmentstatus) {
-
-                if (isset($assignmentstatus)) {
-                    if ($assignmentstatus == 'saved') {
-                        $savedactivities++;
-                    } else if ($assignmentstatus == 'submitted') {
-                        $incompletedactivities++;
-                    } else if ($assignmentstatus == 'waitinggrade') {
-                        $waitingforgradeactivities++;
-                    }
-                }
-            } else {
-                $notattemptedactivities++;
-            }
-        } else if ($completionstate == 1 || $completionstate == 2) {
-            if (isset($assignmentstatus)) {
-                if ($assignmentstatus == 'saved') {
-                    $savedactivities++;
-                } else if ($assignmentstatus == 'submitted') {
-                    $completedactivities++;
-                } else if ($assignmentstatus == 'waitinggrade') {
-                    $waitingforgradeactivities++;
-                }
-            }
-        } else if ($completionstate == 3) {
-            if (($activity->module == 1)
-                && ($activity->modname == 'assignment' || $activity->modname == 'assign')
-                && ($activity->completion == 2)
-                && $assignmentstatus) {
-
-                if (isset($assignmentstatus)) {
-                    if ($assignmentstatus == 'saved') {
-                        $savedactivities++;
-                    } else if ($assignmentstatus == 'submitted') {
-                        $incompletedactivities++;
-                    } else if ($assignmentstatus == 'waitinggrade') {
-                        $waitingforgradeactivities++;
-                    }
-                }
-            } else {
-                $incompletedactivities++;
-            }
-        }
-    }
+if ($activities = block_fn_myprogress_get_gradable_activities($course->id, $USER->id)) {
+    list($completedactivities,
+        $incompletedactivities,
+        $savedactivities,
+        $notattemptedactivities,
+        $waitingforgradeactivities,
+        $status
+    ) = block_fn_myprogress_get_activity_status_numbers($activities, $USER->id);
 }
-
 
 // Switch to show soecific assignment.
 switch ($show) {
@@ -174,181 +118,70 @@ echo "<h4 class='head-title' style='padding-bottom:12px;'>$title</h4>\n";
 // Use paging.
 $totalcount = $activitiesresults;
 
-echo '<table width="96%" class="markingcontainerList" border="0" cellpadding="0" cellspacing="0" align="center">' .
-    '<tr><td class="intd">';
+echo html_writer::start_tag('table',
+    array(
+        'width' => '96%',
+        'class' => 'markingcontainerList',
+        'border' => '0',
+        'cellpadding' => '0',
+        'cellspacing' => '0',
+        'align' => 'center'
+    )
+);
+echo html_writer::start_tag('tr');
+echo html_writer::start_tag('td', array('class' => 'intd'));
 
-echo '<table  width="100%" border="0" cellpadding="0" cellspacing="0">';
-if (($show == 'completed' || $show == 'incompleted'
-        || $show == 'draft' || $show == 'notattempted' || $show == 'waitingforgrade'
+echo html_writer::start_tag('table',
+    array(
+        'id' => 'datatable',
+        'width' => '100%',
+        'border' => '0',
+        'cellpadding' => '0',
+        'cellspacing' => '0'
+    )
+);
+if (($show == 'all'
+        || $show == 'completed'
+        || $show == 'incompleted'
+        || $show == 'draft'
+        || $show == 'notattempted'
+        || $show == 'waitingforgrade'
     ) && $totalcount > 0 && $activities > 0) {
-    echo "<tr>";
-    echo "<th align='center' width='15%'><strong>Activity type </strong></th>";
-    echo "<th align='left' width='67%' style='text-align:left;'><strong>Activity or Resource Name </strong></th>";
-    echo "</tr>";
+    echo html_writer::start_tag('thead');
+    echo html_writer::start_tag('tr');
+    echo html_writer::tag('th',  get_string('activitytype', 'block_fn_myprogress'),
+        array('align' => 'center', 'width' => '15%')
+    );
+    echo html_writer::tag('th',  get_string('activityorresourcename', 'block_fn_myprogress'),
+        array('align' => 'left', 'width' => '27%', 'style' => 'text-align:left;')
+    );
+    echo html_writer::tag('th',  get_string('yourgrade', 'block_fn_myprogress'),
+        array('align' => 'left', 'width' => '15%', 'style' => 'text-align:left;')
+    );
+    echo html_writer::end_tag('tr');
+    echo html_writer::end_tag('thead');
 } else {
-    echo '<div style="text-align:center; padding:12px;">';
-    echo "No activity with status " . get_string($show, 'block_fn_myprogress') . "";
-    echo "</div>";
+    html_writer::div(
+        get_string('noactivitywithstatus', 'block_fn_myprogress', get_string($show, 'block_fn_myprogress')),
+        '', array('style' => 'text-align:center; padding:12px;')
+    );
 }
 
-if ($show == 'completed') {
-    if ($activities) {
-        foreach ($activities as $activity) {
-            if (!$activity->visible) {
-                continue;
-            }
-
-            $data = $completion->get_data($activity, false, $userid = 0, null);
-            $activitystate = $data->completionstate;
-            if ($activitystate == 1 || $activitystate == 2) {
-                echo "<tr><td align='center'>\n";
-                $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
-                echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
-                echo "</td>\n";
-                echo "<td align='left'><a href='" .
-                    $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" .
-                    $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" .
-                    $activity->name . "</a></td>\n";
-            }
-        }
+foreach ($activities as $activity) {
+    $modulecontext = context_module::instance($activity->id);
+    // Show saved status under completed.
+    if (($show == 'completed') && ($status[$activity->id] == 'passed')) {
+        $status[$activity->id] = 'completed';
     }
-} else if ($show == 'incompleted') {
-    if ($activities) {
-        foreach ($activities as $activity) {
-            if (!$activity->visible) {
-                continue;
-            }
-            $data = $completion->get_data($activity, true, $userid = 0, null);
-            $activitystate = $data->completionstate;
-            $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id, $resubmission);
-            if ($activitystate == 3) {
-                if (($activity->module == 1)
-                    && ($activity->modname == 'assignment' || $activity->modname == 'assign')
-                    && ($activity->completion == 2)
-                    && $assignmentstatus) {
-
-                    if ($assignmentstatus == 'submitted') {
-                        echo "<tr><td align='center'>\n";
-                        $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                        $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
-                        echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
-                        echo "</td>\n";
-                        echo "<td align='left'><a href='" .
-                            $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" .
-                            $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" .
-                            $activity->name . "</a></td>\n";
-                    } else {
-                        continue;
-                    }
-                } else {
-                    echo "<tr><td align='center'>\n";
-                    $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                    $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
-                    echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
-                    echo "</td>\n";
-                    echo "<td align='left'><a href='" .
-                        $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" .
-                        $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" .
-                        $activity->name . "</a></td>\n";
-                }
-            }
-        }
+    if (($status[$activity->id] != $show) && ($show != 'all')) {
+        continue;
     }
-} else if ($show == 'notattempted') {
-    if ($activities) {
-        foreach ($activities as $activity) {
-            if (!$activity->visible) {
-                continue;
-            }
-            $data = $completion->get_data($activity, true, $USER->id, null);
-            $activitystate = $data->completionstate;
-            $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id, $resubmission);
-            if ($activitystate == 0) {
-                if (($activity->module == 1)
-                    && ($activity->modname == 'assignment' || $activity->modname == 'assign')
-                    && ($activity->completion == 2)
-                    && $assignmentstatus) {
-                    continue;
-                }
-                echo "<tr><td align='center'>\n";
-                $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
-                echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
-                echo "</td>\n";
-                echo "<td align='left'><a href='" .
-                    $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" .
-                    $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" .
-                    $activity->name . "</a></td>\n";
-            }
-        }
-    }
-} else if ($show == 'waitingforgrade') {
-    if ($activities) {
-        foreach ($activities as $activity) {
-            if (!$activity->visible) {
-                continue;
-            }
-            $data = $completion->get_data($activity, true, $USER->id, null);
-            $activitystate = $data->completionstate;
-            $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id, $resubmission);
-            if (($activitystate == 0)||($activitystate == 1)||($activitystate == 2)||($activitystate == 3)) {
-                if (($activity->module == 1)
-                    && ($activity->modname == 'assignment' || $activity->modname == 'assign')
-                    && ($activity->completion == 2)
-                    && $assignmentstatus) {
-                    if (isset($assignmentstatus)) {
-                        if ($assignmentstatus == 'waitinggrade') {
-                            echo "<tr><td align='center'>\n";
-                            $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                            $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
-                            echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
-                            echo "</td>\n";
-                            echo "<td align='left'><a href='" .
-                                $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" .
-                                $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" .
-                                $activity->name . "</a></td>\n";
-                        }
-                    }
-                }
-            }
-        }
-    }
-} else if ($show == 'draft') {
-    if ($activities) {
-        foreach ($activities as $activity) {
-            if (!$activity->visible) {
-                continue;
-            }
-            $data = $completion->get_data($activity, true, $userid = 0, null);
-            $activitystate = $data->completionstate;
-            $assignmentstatus = block_fn_myprogress_assignment_status($activity, $USER->id, $resubmission);
-            if (($activitystate == 0) || ($activitystate == 1) || ($activitystate == 2) || ($activitystate == 3)) {
-                if (($activity->module == 1)
-                    && ($activity->modname == 'assignment' || $activity->modname == 'assign')
-                    && ($activity->completion == 2)
-                    && $assignmentstatus) {
-                    if (isset($assignmentstatus)) {
-                        if ($assignmentstatus == 'saved') {
-                            echo "<tr><td align='center'>\n";
-                            $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                            $modicon = '<img src="'.$OUTPUT->pix_url('icon', $modtype).'" height="20" width="20">';
-                            echo ucfirst(($modtype == 'assign') ? 'assignment' : $modtype);
-                            echo "</td>\n";
-                            echo "<td align='left'><a href='" .
-                                $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid'>$modicon</a><a href='" .
-                                $CFG->wwwroot . "/mod/$modtype/view.php?id=$data->coursemoduleid' style=\"padding-left:4px\">" .
-                                $activity->name . "</a></td>\n";
-                        }
-                    }
-                }
-            }
-        }
-    }
+    echo block_fn_myprogress_render_activity_row($activity);
 }
-echo"</table>\n";
 
-echo '</td></tr></table>';
-
-echo "</div>";
+echo html_writer::end_tag('table');
+echo html_writer::end_tag('td');
+echo html_writer::end_tag('tr');
+echo html_writer::end_tag('table');
+echo html_writer::end_tag('div');
 echo $OUTPUT->footer($course);
